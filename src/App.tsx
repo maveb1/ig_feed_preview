@@ -35,7 +35,8 @@ export default function App() {
     setPosts([]);
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:5050';
+      const raw = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:5050';
+      const backendUrl = raw.startsWith('http') ? raw : `https://${raw}`;
       const res = await fetch(`${backendUrl}/api/profile/${parsed}`);
       const data = await res.json();
 
