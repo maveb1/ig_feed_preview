@@ -6,6 +6,12 @@ import re
 import os
 import hashlib
 
+BASE_URL = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '')
+if BASE_URL:
+    BASE_URL = f'https://{BASE_URL}'
+else:
+    BASE_URL = f'http://localhost:{os.environ.get("PORT", 5050)}'
+
 app = Flask(__name__)
 CORS(app)
 
@@ -67,7 +73,7 @@ def fetch_via_api(username: str) -> list:
         cdn_url = node.get('display_url') or node.get('thumbnail_src', '')
         if cdn_url:
             filename = download_image(cdn_url)
-            posts.append({'id': shortcode, 'imageUrl': f'http://localhost:5050/api/image/{filename}'})
+            posts.append({'id': shortcode, 'imageUrl': f'{BASE_URL}/api/image/{filename}'})
     return posts
 
 
@@ -99,7 +105,7 @@ def fetch_via_html(username: str) -> list:
         cdn_url = node.get('display_url') or node.get('thumbnail_src', '')
         if cdn_url:
             filename = download_image(cdn_url)
-            posts.append({'id': shortcode, 'imageUrl': f'http://localhost:5050/api/image/{filename}'})
+            posts.append({'id': shortcode, 'imageUrl': f'{BASE_URL}/api/image/{filename}'})
     return posts
 
 
@@ -135,4 +141,5 @@ def get_profile(username: str):
 
 
 if __name__ == '__main__':
-    app.run(port=5050, debug=True)
+    port = int(os.environ.get('PORT', 5050))
+    app.run(host='0.0.0.0', port=port, debug=False)

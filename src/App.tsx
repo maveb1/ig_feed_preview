@@ -35,7 +35,8 @@ export default function App() {
     setPosts([]);
 
     try {
-      const res = await fetch(`http://localhost:5050/api/profile/${parsed}`);
+      const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:5050';
+      const res = await fetch(`${backendUrl}/api/profile/${parsed}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -49,7 +50,7 @@ export default function App() {
         setPosts(fetched);
       }
     } catch {
-      setFetchError('Backend neběží. Spusť: python3 server.py');
+      setFetchError('Backend není dostupný.');
     } finally {
       setLoading(false);
     }
